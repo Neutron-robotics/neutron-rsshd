@@ -1,0 +1,17 @@
+version: '3.8'  # Specify docker-compose version
+
+services:
+  rsshd:
+    image: hugoperier/rsshd:latest
+    container_name: rsshd  # Give the container a clear name
+    restart: always  # Restart the container if it stops
+    ports:
+      - "2222:22"     # Map host port 2222 to container's SSH port 22
+      - "10000-10100:10000-10100"  # Expose ports for reverse tunnels
+    environment:
+      ROOT_PASSWORD:   # Set a secure password here
+      NEUTRON_PASSWORD:       # password for the neutron user
+      LOCAL: "0"   # Set to 1 to restrict tunnel access within container
+    volumes:
+      - /Users/hugoperier/Projects/Lab/reverse-ssh-tunnel/rsshd/tmp:/etc/ssh/keys  # Persist host keys
+      - /Users/hugoperier/Projects/Lab/reverse-ssh-tunnel/rsshd/tmp:/root/.ssh  # Store authorized client keys
