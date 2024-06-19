@@ -35,6 +35,32 @@ docker push docker push hugoperier/neutron-rsshd:latest
 docker-compose up -d
 ```
 
+### Create a reverse SSH tunnel
+
+A ssh reverse tunnel can be established between a client and the container to forward a port to the container's network:
+
+```bash
+ssh -fN -R 10005:localhost:4321 -p 2222 neutron-user@connect.neutron-robotics.com 
+```
+
+**In this example:**
+- The client is opening a tunnel leading to the port **4321** on this machine
+- The port **10005** will be accessible on the docker container
+- The SSH tunnel uses the port **2222**, which is the SSH port open for the neutron server
+- **neutron-user** is the container user used to open the connection
+- **connect.neutron-robotics.com** is the host (pointing to the container)
+
+### Cloudflare specific
+
+When using cloudflare, and additional configuration is needed to allow the client to access the host through SSH:
+
+1. Install cloudflared
+2. Update the ~/.ssh/config
+```   
+Host connect.neutron-robotics.com
+ProxyCommand /opt/homebrew/bin/cloudflared access ssh --hostname %h
+```
+
 ## Environment Variables
 
 * **ROOT_PASSWORD:** The password for the 'root' user within the container. If not provided, a random password will be generated on startup.
